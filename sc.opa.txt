@@ -1,0 +1,1410 @@
+-- ==========================================
+-- OPAH HOROR - FULL SCRIPT
+-- KEY SYSTEM
+-- FPS BOOST
+-- AUTO TELEPORT KEY & CODE
+-- ESP OPAH, KEY, CODE & PLAYER
+-- TELEPORT KEY & CODE
+-- SHORTCUT H (KEY 5x -> CODE -> REPEAT)
+-- ANIMASI SALJU DI BACKGROUND
+-- LOGO
+-- LocalScript - StarterPlayerScripts
+-- ==========================================
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local Lighting = game:GetService("Lighting")
+local RunService = game:GetService("RunService")
+local ProximityPromptService = game:GetService("ProximityPromptService")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local camera = workspace.CurrentCamera
+
+-- ==================== CONFIG ====================
+
+local DESTINATION = Vector3.new(302.52, 11.14, -222.54)
+
+-- ==================== HAPUS GUI LAMA ====================
+
+local oldGui = playerGui:FindFirstChild("OPAHHOROR")
+if oldGui then oldGui:Destroy() end
+
+-- ==================== SCREEN GUI ====================
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "OPAHHOROR"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.DisplayOrder = 999
+ScreenGui.Parent = playerGui
+
+-- ==================== KEY SYSTEM ====================
+
+local KeyFrame = Instance.new("Frame")
+KeyFrame.Name = "KeyFrame"
+KeyFrame.Size = UDim2.new(0, 320, 0, 180)
+KeyFrame.Position = UDim2.new(0.5, -160, 0.5, -90)
+KeyFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+KeyFrame.BorderSizePixel = 0
+KeyFrame.Active = true
+KeyFrame.Draggable = true
+KeyFrame.Parent = ScreenGui
+
+local KeyCorner = Instance.new("UICorner")
+KeyCorner.CornerRadius = UDim.new(0, 10)
+KeyCorner.Parent = KeyFrame
+
+local KeyStroke = Instance.new("UIStroke")
+KeyStroke.Color = Color3.fromRGB(25, 130, 65)
+KeyStroke.Thickness = 1.5
+KeyStroke.Parent = KeyFrame
+
+-- ==================== ANIMASI SALJU BACKGROUND (KEY) ====================
+
+local KeySnowHolder = Instance.new("Folder")
+KeySnowHolder.Name = "SnowHolder"
+KeySnowHolder.Parent = KeyFrame
+
+task.spawn(function()
+    while KeyFrame and KeyFrame.Parent do
+        task.wait(0.2)
+        if not KeyFrame or not KeyFrame.Parent then break end
+        
+        local flake = Instance.new("Frame")
+        local size = math.random(3, 6)
+        flake.Size = UDim2.new(0, size, 0, size)
+        flake.Position = UDim2.new(math.random(0, 100) / 100, 0, 0, -10)
+        flake.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        flake.BackgroundTransparency = math.random(30, 70) / 100
+        flake.BorderSizePixel = 0
+        flake.ZIndex = 0
+        
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(1, 0)
+        corner.Parent = flake
+        
+        flake.Parent = KeySnowHolder
+        
+        local fallTime = math.random(30, 60) / 10
+        local twInfo = TweenInfo.new(fallTime, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+        local tw = TweenService:Create(flake, twInfo, {
+            Position = UDim2.new(flake.Position.X.Scale, math.random(-30, 30), 1, 10)
+        })
+        
+        tw:Play()
+        tw.Completed:Connect(function()
+            flake:Destroy()
+        end)
+    end
+end)
+
+local KeyTitle = Instance.new("TextLabel")
+KeyTitle.Size = UDim2.new(1, 0, 0, 40)
+KeyTitle.BackgroundTransparency = 1
+KeyTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyTitle.TextSize = 14
+KeyTitle.Font = Enum.Font.GothamBold
+KeyTitle.Text = "MASUKKAN KEY AKSES"
+KeyTitle.ZIndex = 2
+KeyTitle.Parent = KeyFrame
+
+local KeyBox = Instance.new("TextBox")
+KeyBox.Size = UDim2.new(0, 260, 0, 40)
+KeyBox.Position = UDim2.new(0.5, -130, 0, 55)
+KeyBox.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+KeyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyBox.TextSize = 13
+KeyBox.Font = Enum.Font.GothamBold
+KeyBox.PlaceholderText = "Ketik Key di sini..."
+KeyBox.Text = ""
+KeyBox.ClearTextOnFocus = false
+KeyBox.ZIndex = 2
+KeyBox.Parent = KeyFrame
+
+local KeyBoxCorner = Instance.new("UICorner")
+KeyBoxCorner.CornerRadius = UDim.new(0, 6)
+KeyBoxCorner.Parent = KeyBox
+
+local SubmitKeyBtn = Instance.new("TextButton")
+SubmitKeyBtn.Size = UDim2.new(0, 260, 0, 38)
+SubmitKeyBtn.Position = UDim2.new(0.5, -130, 0, 110)
+SubmitKeyBtn.BackgroundColor3 = Color3.fromRGB(25, 130, 65)
+SubmitKeyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+SubmitKeyBtn.TextSize = 13
+SubmitKeyBtn.Font = Enum.Font.GothamBold
+SubmitKeyBtn.Text = "LOGIN"
+SubmitKeyBtn.ZIndex = 2
+SubmitKeyBtn.Parent = KeyFrame
+
+local SubmitKeyCorner = Instance.new("UICorner")
+SubmitKeyCorner.CornerRadius = UDim.new(0, 6)
+SubmitKeyCorner.Parent = SubmitKeyBtn
+
+-- ==================== MENU UTAMA ====================
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 440, 0, 420)
+MainFrame.Position = UDim2.new(0.5, -220, 0.5, -210)
+MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Visible = false
+MainFrame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = MainFrame
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(255, 255, 255)
+UIStroke.Thickness = 1.5
+UIStroke.Parent = MainFrame
+
+local BgGradient = Instance.new("UIGradient")
+BgGradient.Rotation = 45
+BgGradient.Parent = MainFrame
+
+-- ==================== ANIMASI SALJU BACKGROUND (MAIN MENU) ====================
+
+local MainSnowHolder = Instance.new("Folder")
+MainSnowHolder.Name = "SnowHolder"
+MainSnowHolder.Parent = MainFrame
+
+task.spawn(function()
+    while MainFrame and MainFrame.Parent do
+        task.wait(0.2)
+        if not MainFrame or not MainFrame.Parent then break end
+        
+        local flake = Instance.new("Frame")
+        local size = math.random(3, 6)
+        flake.Size = UDim2.new(0, size, 0, size)
+        flake.Position = UDim2.new(math.random(0, 100) / 100, 0, 0, -10)
+        flake.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        flake.BackgroundTransparency = math.random(30, 70) / 100
+        flake.BorderSizePixel = 0
+        flake.ZIndex = 0
+        
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(1, 0)
+        corner.Parent = flake
+        
+        flake.Parent = MainSnowHolder
+        
+        local fallTime = math.random(30, 60) / 10
+        local twInfo = TweenInfo.new(fallTime, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+        local tw = TweenService:Create(flake, twInfo, {
+            Position = UDim2.new(flake.Position.X.Scale, math.random(-30, 30), 1, 10)
+        })
+        
+        tw:Play()
+        tw.Completed:Connect(function()
+            flake:Destroy()
+        end)
+    end
+end)
+
+task.spawn(function()
+    while MainFrame and MainFrame.Parent do
+        local hue = (tick() % 6) / 6
+        local color1 = Color3.fromHSV(hue, 0.7, 0.9)
+        local color2 = Color3.fromHSV((hue + 0.25) % 1, 0.7, 0.4)
+
+        BgGradient.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, color1),
+            ColorSequenceKeypoint.new(1, color2)
+        })
+
+        UIStroke.Color = color1
+        RunService.RenderStepped:Wait()
+    end
+end)
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, -100, 0, 45)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.BackgroundTransparency = 1
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 13
+Title.Font = Enum.Font.GothamBold
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Text = "OPAH HOROR\n<font size='10' color='#FFFFFF'>Tutup L, Logo | H: KEY/CODE</font>"
+Title.RichText = true
+Title.ZIndex = 2
+Title.Parent = MainFrame
+
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.new(0, 26, 0, 26)
+CloseBtn.Position = UDim2.new(1, -34, 0, 10)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(50, 30, 80)
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.TextSize = 11
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.Text = "X"
+CloseBtn.ZIndex = 2
+CloseBtn.Parent = MainFrame
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 6)
+CloseCorner.Parent = CloseBtn
+
+-- ==================== TAB ====================
+
+local TabFpsBtn = Instance.new("TextButton")
+TabFpsBtn.Size = UDim2.new(0, 195, 0, 32)
+TabFpsBtn.Position = UDim2.new(0, 15, 0, 52)
+TabFpsBtn.BackgroundColor3 = Color3.fromRGB(25, 130, 65)
+TabFpsBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+TabFpsBtn.TextSize = 12
+TabFpsBtn.Font = Enum.Font.GothamBold
+TabFpsBtn.Text = "FPS BOOST"
+TabFpsBtn.ZIndex = 2
+TabFpsBtn.Parent = MainFrame
+
+local TabFpsCorner = Instance.new("UICorner")
+TabFpsCorner.CornerRadius = UDim.new(0, 6)
+TabFpsCorner.Parent = TabFpsBtn
+
+local TabFiturBtn = Instance.new("TextButton")
+TabFiturBtn.Size = UDim2.new(0, 195, 0, 32)
+TabFiturBtn.Position = UDim2.new(0, 215, 0, 52)
+TabFiturBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+TabFiturBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+TabFiturBtn.TextSize = 12
+TabFiturBtn.Font = Enum.Font.GothamBold
+TabFiturBtn.Text = "FITUR"
+TabFiturBtn.ZIndex = 2
+TabFiturBtn.Parent = MainFrame
+
+local TabFiturCorner = Instance.new("UICorner")
+TabFiturCorner.CornerRadius = UDim.new(0, 6)
+TabFiturCorner.Parent = TabFiturBtn
+
+-- ==================== HALAMAN ====================
+
+local PageFps = Instance.new("ScrollingFrame")
+PageFps.Size = UDim2.new(1, -30, 1, -100)
+PageFps.Position = UDim2.new(0, 15, 0, 95)
+PageFps.BackgroundTransparency = 1
+PageFps.BorderSizePixel = 0
+PageFps.ScrollBarThickness = 4
+PageFps.Visible = true
+PageFps.ZIndex = 2
+PageFps.Parent = MainFrame
+
+local PageFitur = Instance.new("ScrollingFrame")
+PageFitur.Size = UDim2.new(1, -30, 1, -100)
+PageFitur.Position = UDim2.new(0, 15, 0, 95)
+PageFitur.BackgroundTransparency = 1
+PageFitur.BorderSizePixel = 0
+PageFitur.ScrollBarThickness = 4
+PageFitur.Visible = false
+PageFitur.ZIndex = 2
+PageFitur.Parent = MainFrame
+
+-- ==================== FPS BOOST ====================
+
+local FpsBoostButton = Instance.new("TextButton")
+FpsBoostButton.Size = UDim2.new(1, 0, 0, 38)
+FpsBoostButton.Position = UDim2.new(0, 0, 0, 5)
+FpsBoostButton.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+FpsBoostButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+FpsBoostButton.TextSize = 13
+FpsBoostButton.Font = Enum.Font.GothamBold
+FpsBoostButton.Text = "FPS BOOST: OFF"
+FpsBoostButton.ZIndex = 2
+FpsBoostButton.Parent = PageFps
+
+local FpsBoostCorner = Instance.new("UICorner")
+FpsBoostCorner.CornerRadius = UDim.new(0, 7)
+FpsBoostCorner.Parent = FpsBoostButton
+
+-- ==================== ESP BUTTON ====================
+
+local EspOpahButton = Instance.new("TextButton")
+EspOpahButton.Size = UDim2.new(1, 0, 0, 38)
+EspOpahButton.Position = UDim2.new(0, 0, 0, 5)
+EspOpahButton.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+EspOpahButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+EspOpahButton.TextSize = 13
+EspOpahButton.Font = Enum.Font.GothamBold
+EspOpahButton.Text = "ESP OPAH, KEY & CODE: OFF"
+EspOpahButton.ZIndex = 2
+EspOpahButton.Parent = PageFitur
+
+local EspOpahCorner = Instance.new("UICorner")
+EspOpahCorner.CornerRadius = UDim.new(0, 7)
+EspOpahCorner.Parent = EspOpahButton
+
+-- ==================== ESP PLAYER BUTTON ====================
+
+local EspPlayerButton = Instance.new("TextButton")
+EspPlayerButton.Size = UDim2.new(1, 0, 0, 38)
+EspPlayerButton.Position = UDim2.new(0, 0, 0, 50)
+EspPlayerButton.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+EspPlayerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+EspPlayerButton.TextSize = 13
+EspPlayerButton.Font = Enum.Font.GothamBold
+EspPlayerButton.Text = "ESP PLAYER: OFF"
+EspPlayerButton.ZIndex = 2
+EspPlayerButton.Parent = PageFitur
+
+local EspPlayerCorner = Instance.new("UICorner")
+EspPlayerCorner.CornerRadius = UDim.new(0, 7)
+EspPlayerCorner.Parent = EspPlayerButton
+
+-- ==================== TELEPORT BUTTONS ====================
+
+local TeleportKeyButton = Instance.new("TextButton")
+TeleportKeyButton.Size = UDim2.new(1, 0, 0, 38)
+TeleportKeyButton.Position = UDim2.new(0, 0, 0, 95)
+TeleportKeyButton.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+TeleportKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TeleportKeyButton.TextSize = 13
+TeleportKeyButton.Font = Enum.Font.GothamBold
+TeleportKeyButton.Text = "TELEPORT TO KEY"
+TeleportKeyButton.ZIndex = 2
+TeleportKeyButton.Parent = PageFitur
+
+local TeleportKeyCorner = Instance.new("UICorner")
+TeleportKeyCorner.CornerRadius = UDim.new(0, 7)
+TeleportKeyCorner.Parent = TeleportKeyButton
+
+local TeleportCodeButton = Instance.new("TextButton")
+TeleportCodeButton.Size = UDim2.new(1, 0, 0, 38)
+TeleportCodeButton.Position = UDim2.new(0, 0, 0, 140)
+TeleportCodeButton.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+TeleportCodeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TeleportCodeButton.TextSize = 13
+TeleportCodeButton.Font = Enum.Font.GothamBold
+TeleportCodeButton.Text = "TELEPORT TO CODE"
+TeleportCodeButton.ZIndex = 2
+TeleportCodeButton.Parent = PageFitur
+
+local TeleportCodeCorner = Instance.new("UICorner")
+TeleportCodeCorner.CornerRadius = UDim.new(0, 7)
+TeleportCodeCorner.Parent = TeleportCodeButton
+
+PageFitur.CanvasSize = UDim2.new(0, 0, 0, 190)
+
+-- ==================== TAB SYSTEM ====================
+
+TabFpsBtn.Activated:Connect(function()
+    PageFps.Visible = true
+    PageFitur.Visible = false
+    TabFpsBtn.BackgroundColor3 = Color3.fromRGB(25, 130, 65)
+    TabFiturBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+end)
+
+TabFiturBtn.Activated:Connect(function()
+    PageFps.Visible = false
+    PageFitur.Visible = true
+    TabFiturBtn.BackgroundColor3 = Color3.fromRGB(25, 130, 65)
+    TabFpsBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+end)
+
+-- ==================== VARIABLES ====================
+
+local originalProperties = {}
+local fpsBoostEnabled = false
+local espOpahActive = false
+local espPlayerActive = false
+local keyAuthenticated = false
+
+local trackedOpahModel = nil
+local activeHighlight = nil
+local activeBillboard = nil
+
+local activeKeyHighlights = {}
+local activeKeyBillboards = {}
+
+local activeCodeHighlights = {}
+local activeCodeBillboards = {}
+
+local activePlayerHighlights = {}
+local activePlayerBillboards = {}
+
+local lastKeyScan = 0
+local lastCodeScan = 0
+
+local workspaceAddedConnection = nil
+local lightingAddedConnection = nil
+
+-- ==================== KEY INPUT ====================
+
+local actualKey = ""
+local updatingKey = false
+
+KeyBox:GetPropertyChangedSignal("Text"):Connect(function()
+    if updatingKey then return end
+
+    updatingKey = true
+
+    local text = KeyBox.Text
+    local len = utf8.len(text) or #text
+    local actualLen = utf8.len(actualKey) or #actualKey
+
+    if len > actualLen then
+        local added = string.sub(text, #text, #text)
+        actualKey = actualKey .. added
+    elseif len < actualLen then
+        local diff = actualLen - len
+        actualKey = string.sub(actualKey, 1, actualLen - diff)
+    end
+
+    KeyBox.Text = string.rep("•", utf8.len(actualKey) or #actualKey)
+    updatingKey = false
+end)
+
+-- ==================== FPS PROPERTY ====================
+
+local function setTemporaryProperty(instance, propertyName, newValue)
+    local ok, originalValue = pcall(function()
+        return instance[propertyName]
+    end)
+
+    if not ok then return end
+
+    if not originalProperties[instance] then
+        originalProperties[instance] = {}
+    end
+
+    if originalProperties[instance][propertyName] == nil then
+        originalProperties[instance][propertyName] = originalValue
+    end
+
+    pcall(function()
+        instance[propertyName] = newValue
+    end)
+end
+
+local function applyLowGraphics(instance)
+    if not instance or not instance.Parent then return end
+
+    if instance:IsA("BasePart") then
+        setTemporaryProperty(instance, "Material", Enum.Material.SmoothPlastic)
+        setTemporaryProperty(instance, "CastShadow", false)
+        setTemporaryProperty(instance, "Reflectance", 0)
+
+    elseif instance:IsA("Decal") or instance:IsA("Texture") then
+        setTemporaryProperty(instance, "Transparency", 1)
+
+    elseif instance:IsA("PostEffect") then
+        setTemporaryProperty(instance, "Enabled", false)
+
+    elseif instance:IsA("ParticleEmitter")
+        or instance:IsA("Trail")
+        or instance:IsA("Beam")
+        or instance:IsA("Fire")
+        or instance:IsA("Smoke")
+        or instance:IsA("Sparkles")
+        or instance:IsA("Clouds") then
+
+        setTemporaryProperty(instance, "Enabled", false)
+    end
+end
+
+local function restoreGraphics()
+    for instance, properties in pairs(originalProperties) do
+        for propertyName, originalValue in pairs(properties) do
+            pcall(function()
+                instance[propertyName] = originalValue
+            end)
+        end
+    end
+
+    table.clear(originalProperties)
+end
+
+local function setFpsBoost(enabled)
+    fpsBoostEnabled = enabled
+
+    if enabled then
+        FpsBoostButton.Text = "FPS BOOST: ON"
+        FpsBoostButton.BackgroundColor3 = Color3.fromRGB(25, 130, 65)
+
+        setTemporaryProperty(Lighting, "GlobalShadows", false)
+        setTemporaryProperty(Lighting, "EnvironmentDiffuseScale", 0)
+        setTemporaryProperty(Lighting, "EnvironmentSpecularScale", 0)
+
+        local terrain = workspace:FindFirstChildOfClass("Terrain")
+
+        if terrain then
+            setTemporaryProperty(terrain, "Decoration", false)
+            setTemporaryProperty(terrain, "WaterWaveSize", 0)
+            setTemporaryProperty(terrain, "WaterWaveSpeed", 0)
+            setTemporaryProperty(terrain, "WaterReflectance", 0)
+        end
+
+        for _, inst in ipairs(workspace:GetDescendants()) do
+            applyLowGraphics(inst)
+        end
+
+        for _, inst in ipairs(Lighting:GetDescendants()) do
+            applyLowGraphics(inst)
+        end
+
+        if not workspaceAddedConnection then
+            workspaceAddedConnection =
+                workspace.DescendantAdded:Connect(applyLowGraphics)
+        end
+
+        if not lightingAddedConnection then
+            lightingAddedConnection =
+                Lighting.DescendantAdded:Connect(applyLowGraphics)
+        end
+    else
+        FpsBoostButton.Text = "FPS BOOST: OFF"
+        FpsBoostButton.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+
+        if workspaceAddedConnection then
+            workspaceAddedConnection:Disconnect()
+            workspaceAddedConnection = nil
+        end
+
+        if lightingAddedConnection then
+            lightingAddedConnection:Disconnect()
+            lightingAddedConnection = nil
+        end
+
+        restoreGraphics()
+    end
+end
+
+FpsBoostButton.Activated:Connect(function()
+    setFpsBoost(not fpsBoostEnabled)
+end)
+
+-- ==================== DETEKSI KEY ====================
+
+local function isRealKeyPrompt(prompt)
+    if not prompt:IsA("ProximityPrompt") then
+        return false
+    end
+
+    local action = string.lower(prompt.ActionText or "")
+    local object = string.lower(prompt.ObjectText or "")
+
+    if action ~= "pick up" and action ~= "ambil" and action ~= "" then
+        return false
+    end
+
+    if not string.find(object, "key", 1, true) and not string.find(object, "kunci", 1, true) then
+        return false
+    end
+
+    if string.find(object, "padlock", 1, true)
+        or string.find(object, "lock", 1, true)
+        or string.find(object, "gembok", 1, true) then
+        return false
+    end
+
+    return true
+end
+
+-- ==================== DETEKSI CODE ====================
+
+local function containsCodeText(value)
+    local text = string.lower(tostring(value or ""))
+
+    return string.find(text, "catatan", 1, true)
+        or string.find(text, "kode", 1, true)
+        or string.find(text, "code", 1, true)
+        or string.find(text, "sandi", 1, true)
+end
+
+local function isRealCodePrompt(prompt)
+    if not prompt:IsA("ProximityPrompt") then
+        return false
+    end
+
+    local action = string.lower(prompt.ActionText or "")
+    local object = prompt.ObjectText or ""
+
+    if not containsCodeText(object) then
+        return false
+    end
+
+    if action ~= "" and action ~= "ambil" and action ~= "pick up" then
+        return false
+    end
+
+    return true
+end
+
+local function isCodeObject(obj)
+    local name = string.lower(obj.Name or "")
+
+    return string.find(name, "catatan", 1, true)
+        or string.find(name, "kode", 1, true)
+        or string.find(name, "code", 1, true)
+        or string.find(name, "sandi", 1, true)
+end
+
+-- ==================== GET OBJECT ====================
+
+local function getPromptObject(prompt)
+    local current = prompt.Parent
+
+    while current and current ~= workspace do
+        if current:IsA("Model") then
+            return current
+        end
+
+        current = current.Parent
+    end
+
+    return prompt.Parent
+end
+
+-- ==================== TELEPORT SYSTEM ====================
+
+local function teleportToObject(object)
+    if not object or not object.Parent then
+        return false
+    end
+
+    local character = player.Character
+    local rootPart = character and character:FindFirstChild("HumanoidRootPart")
+
+    if not rootPart then
+        return false
+    end
+
+    local targetPart
+
+    if object:IsA("BasePart") then
+        targetPart = object
+    else
+        targetPart = object:FindFirstChildWhichIsA("BasePart", true)
+    end
+
+    if not targetPart then
+        return false
+    end
+
+    rootPart.CFrame = CFrame.new(
+        targetPart.Position + Vector3.new(0, 3, 0)
+    )
+
+    return true
+end
+
+local function findKeyObject()
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("ProximityPrompt") and isRealKeyPrompt(obj) then
+            local keyObject = getPromptObject(obj)
+
+            if keyObject and keyObject.Parent then
+                return keyObject
+            end
+        end
+    end
+
+    return nil
+end
+
+local function findCodeObject()
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("ProximityPrompt") and isRealCodePrompt(obj) then
+            local codeObject = getPromptObject(obj)
+
+            if codeObject and codeObject.Parent then
+                return codeObject
+            end
+        end
+    end
+
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if (obj:IsA("Model") or obj:IsA("BasePart"))
+            and isCodeObject(obj) then
+            return obj
+        end
+    end
+
+    return nil
+end
+
+-- ==================== AUTO TELEPORT KEY & CODE ====================
+
+local autoTeleportDebounce = false
+
+local function autoTeleportAfterPickup()
+    if autoTeleportDebounce then return end
+
+    autoTeleportDebounce = true
+
+    task.delay(0.5, function()
+        local character = player.Character
+        local rootPart = character
+            and character:FindFirstChild("HumanoidRootPart")
+
+        if rootPart then
+            rootPart.CFrame = CFrame.new(DESTINATION)
+        end
+
+        task.delay(1, function()
+            autoTeleportDebounce = false
+        end)
+    end)
+end
+
+ProximityPromptService.PromptTriggered:Connect(function(prompt, triggeringPlayer)
+    if triggeringPlayer and triggeringPlayer ~= player then
+        return
+    end
+
+    if isRealKeyPrompt(prompt) or isRealCodePrompt(prompt) then
+        autoTeleportAfterPickup()
+    end
+end)
+
+-- ==================== CLEAR ESP ====================
+
+local function clearOpahESP()
+    if activeHighlight then
+        activeHighlight:Destroy()
+        activeHighlight = nil
+    end
+
+    if activeBillboard then
+        activeBillboard:Destroy()
+        activeBillboard = nil
+    end
+
+    trackedOpahModel = nil
+end
+
+local function clearKeyESP()
+    for _, highlight in pairs(activeKeyHighlights) do
+        if highlight then highlight:Destroy() end
+    end
+
+    for _, billboard in pairs(activeKeyBillboards) do
+        if billboard then billboard:Destroy() end
+    end
+
+    table.clear(activeKeyHighlights)
+    table.clear(activeKeyBillboards)
+end
+
+local function clearCodeESP()
+    for _, highlight in pairs(activeCodeHighlights) do
+        if highlight then highlight:Destroy() end
+    end
+
+    for _, billboard in pairs(activeCodeBillboards) do
+        if billboard then billboard:Destroy() end
+    end
+
+    table.clear(activeCodeHighlights)
+    table.clear(activeCodeBillboards)
+end
+
+local function clearPlayerESP()
+    for _, highlight in pairs(activePlayerHighlights) do
+        if highlight then highlight:Destroy() end
+    end
+
+    for _, billboard in pairs(activePlayerBillboards) do
+        if billboard then billboard:Destroy() end
+    end
+
+    table.clear(activePlayerHighlights)
+    table.clear(activePlayerBillboards)
+end
+
+local function clearAllESP()
+    clearOpahESP()
+    clearKeyESP()
+    clearCodeESP()
+    clearPlayerESP()
+end
+
+-- ==================== BUAT LABEL ESP ====================
+
+local function createESPLabel(object, labelText, color, billboardTable)
+    local adorneePart
+
+    if object:IsA("BasePart") then
+        adorneePart = object
+    else
+        adorneePart = object:FindFirstChildWhichIsA("BasePart", true)
+    end
+
+    if not adorneePart then return end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "OPAH_ESP_Label"
+    billboard.Adornee = adorneePart
+    billboard.Size = UDim2.new(0, 140, 0, 35)
+    billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Parent = playerGui
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.Text = labelText
+    label.TextColor3 = color
+    label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    label.TextStrokeTransparency = 0
+    label.TextSize = 18
+    label.Font = Enum.Font.GothamBold
+    label.Parent = billboard
+
+    billboardTable[object] = billboard
+end
+
+-- ==================== TAMBAHKAN ESP KEY ====================
+
+local function addKeyESP(prompt)
+    if not isRealKeyPrompt(prompt) then return end
+
+    local keyObject = getPromptObject(prompt)
+
+    if not keyObject or not keyObject.Parent then return end
+    if activeKeyHighlights[keyObject] then return end
+
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "ESP_KEY_Highlight"
+    highlight.Adornee = keyObject
+    highlight.FillColor = Color3.fromRGB(255, 220, 0)
+    highlight.FillTransparency = 0.35
+    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+    highlight.OutlineTransparency = 0
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    highlight.Parent = keyObject
+
+    activeKeyHighlights[keyObject] = highlight
+
+    createESPLabel(
+        keyObject,
+        "KEY",
+        Color3.fromRGB(255, 255, 0),
+        activeKeyBillboards
+    )
+end
+
+-- ==================== TAMBAHKAN ESP CODE ====================
+
+local function addCodeESP(object)
+    if not object or not object.Parent then return end
+    if activeCodeHighlights[object] then return end
+
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "ESP_CODE_Highlight"
+    highlight.Adornee = object
+    highlight.FillColor = Color3.fromRGB(0, 140, 255)
+    highlight.FillTransparency = 0.35
+    highlight.OutlineColor = Color3.fromRGB(0, 200, 255)
+    highlight.OutlineTransparency = 0
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    highlight.Parent = object
+
+    activeCodeHighlights[object] = highlight
+
+    createESPLabel(
+        object,
+        "CODE",
+        Color3.fromRGB(0, 170, 255),
+        activeCodeBillboards
+    )
+end
+
+-- ==================== TAMBAHKAN ESP PLAYER ====================
+
+local function addPlayerESP(p)
+    if p == player then return end
+
+    local function setupCharacter(char)
+        if not char then return end
+        if activePlayerHighlights[char] then return end
+
+        local highlight = Instance.new("Highlight")
+        highlight.Name = "ESP_Player_Highlight"
+        highlight.Adornee = char
+        highlight.FillColor = Color3.fromRGB(0, 255, 100)
+        highlight.FillTransparency = 0.4
+        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+        highlight.OutlineTransparency = 0
+        highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        highlight.Parent = char
+
+        activePlayerHighlights[char] = highlight
+
+        createESPLabel(
+            char,
+            p.Name,
+            Color3.fromRGB(0, 255, 100),
+            activePlayerBillboards
+        )
+    end
+
+    if p.Character then
+        setupCharacter(p.Character)
+    end
+
+    p.CharacterAdded:Connect(setupCharacter)
+end
+
+local function updatePlayerESP()
+    if not espPlayerActive then return end
+
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= player then
+            local char = p.Character
+            if char and char.Parent then
+                if not activePlayerHighlights[char] then
+                    addPlayerESP(p)
+                end
+            end
+        end
+    end
+
+    for char, highlight in pairs(activePlayerHighlights) do
+        if not char or not char.Parent then
+            if highlight then highlight:Destroy() end
+            activePlayerHighlights[char] = nil
+
+            local billboard = activePlayerBillboards[char]
+            if billboard then billboard:Destroy() end
+            activePlayerBillboards[char] = nil
+        end
+    end
+end
+
+local function scanCodeObjects()
+    if tick() - lastCodeScan < 0.5 then return end
+    lastCodeScan = tick()
+
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("ProximityPrompt") and isRealCodePrompt(obj) then
+            addCodeESP(getPromptObject(obj))
+
+        elseif (obj:IsA("Model") or obj:IsA("BasePart"))
+            and isCodeObject(obj) then
+            addCodeESP(obj)
+        end
+    end
+
+    for obj, highlight in pairs(activeCodeHighlights) do
+        if not obj.Parent then
+            if highlight then highlight:Destroy() end
+            activeCodeHighlights[obj] = nil
+
+            local billboard = activeCodeBillboards[obj]
+            if billboard then billboard:Destroy() end
+            activeCodeBillboards[obj] = nil
+        end
+    end
+end
+
+-- ==================== UPDATE ESP KEY ====================
+
+local function updateKeyESP()
+    if tick() - lastKeyScan < 0.5 then return end
+    lastKeyScan = tick()
+
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("ProximityPrompt") then
+            addKeyESP(obj)
+        end
+    end
+
+    for obj, highlight in pairs(activeKeyHighlights) do
+        if not obj.Parent then
+            if highlight then highlight:Destroy() end
+            activeKeyHighlights[obj] = nil
+
+            local billboard = activeKeyBillboards[obj]
+            if billboard then billboard:Destroy() end
+            activeKeyBillboards[obj] = nil
+        end
+    end
+end
+
+-- ==================== UPDATE ESP OPAH ====================
+
+local function updateOpahESP()
+    if trackedOpahModel and trackedOpahModel.Parent then
+        return
+    end
+
+    clearOpahESP()
+
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("Model") then
+            local humanoid = obj:FindFirstChildOfClass("Humanoid")
+
+            local hrp = obj:FindFirstChild("HumanoidRootPart")
+                or obj:FindFirstChild("Torso")
+                or obj:FindFirstChild("Head")
+
+            local isAPlayer = false
+
+            for _, p in ipairs(Players:GetPlayers()) do
+                if p.Character == obj then
+                    isAPlayer = true
+                    break
+                end
+            end
+
+            if not isAPlayer and humanoid and hrp then
+                local isTallOpah = false
+
+                pcall(function()
+                    if obj:GetExtentsSize().Y > 4.3 then
+                        isTallOpah = true
+                    end
+                end)
+
+                if isTallOpah then
+                    local rayOrigin = hrp.Position
+                    local rayDirection = Vector3.new(0, 30, 0)
+
+                    local raycastParams = RaycastParams.new()
+                    raycastParams.FilterType =
+                        Enum.RaycastFilterType.Exclude
+
+                    raycastParams.FilterDescendantsInstances = {
+                        obj,
+                        player.Character
+                    }
+
+                    local raycastResult = workspace:Raycast(
+                        rayOrigin,
+                        rayDirection,
+                        raycastParams
+                    )
+
+                    if raycastResult then
+                        trackedOpahModel = obj
+
+                        local highlight = Instance.new("Highlight")
+                        highlight.Name = "OpahHighlight"
+                        highlight.Adornee = obj
+                        highlight.FillColor = Color3.fromRGB(255, 40, 40)
+                        highlight.FillTransparency = 0.4
+                        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                        highlight.OutlineTransparency = 0
+                        highlight.Parent = obj
+
+                        activeHighlight = highlight
+
+                        local billboard = Instance.new("BillboardGui")
+                        billboard.Name = "OpahNameTag"
+                        billboard.Size = UDim2.new(0, 180, 0, 50)
+                        billboard.StudsOffset = Vector3.new(0, 5, 0)
+                        billboard.AlwaysOnTop = true
+                        billboard.Parent = hrp
+
+                        local nameLabel = Instance.new("TextLabel")
+                        nameLabel.Size = UDim2.new(1, 0, 1, 0)
+                        nameLabel.BackgroundTransparency = 1
+                        nameLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
+                        nameLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+                        nameLabel.TextStrokeTransparency = 0
+                        nameLabel.TextSize = 22
+                        nameLabel.Font = Enum.Font.GothamBold
+                        nameLabel.Text = "WARNING OPAH"
+                        nameLabel.Parent = billboard
+
+                        activeBillboard = billboard
+                        break
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- ==================== TOGGLE ESP GABUNGAN ====================
+
+local function setEspOpah(enabled)
+    espOpahActive = enabled
+
+    if enabled then
+        EspOpahButton.Text = "ESP OPAH, KEY & CODE: ON"
+        EspOpahButton.BackgroundColor3 = Color3.fromRGB(25, 130, 65)
+
+        lastKeyScan = 0
+        lastCodeScan = 0
+
+        updateKeyESP()
+        scanCodeObjects()
+        updateOpahESP()
+    else
+        EspOpahButton.Text = "ESP OPAH, KEY & CODE: OFF"
+        EspOpahButton.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+
+        clearOpahESP()
+        clearKeyESP()
+        clearCodeESP()
+    end
+end
+
+EspOpahButton.Activated:Connect(function()
+    setEspOpah(not espOpahActive)
+end)
+
+-- ==================== TOGGLE ESP PLAYER ====================
+
+local function setEspPlayer(enabled)
+    espPlayerActive = enabled
+
+    if enabled then
+        EspPlayerButton.Text = "ESP PLAYER: ON"
+        EspPlayerButton.BackgroundColor3 = Color3.fromRGB(25, 130, 65)
+
+        for _, p in ipairs(Players:GetPlayers()) do
+            addPlayerESP(p)
+        end
+    else
+        EspPlayerButton.Text = "ESP PLAYER: OFF"
+        EspPlayerButton.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+
+        clearPlayerESP()
+    end
+end
+
+EspPlayerButton.Activated:Connect(function()
+    setEspPlayer(not espPlayerActive)
+end)
+
+-- ==================== MENU TOGGLE ====================
+
+local function toggleMenu()
+    MainFrame.Visible = not MainFrame.Visible
+end
+
+-- ==================== LOGO ====================
+
+local LogoButton = Instance.new("ImageButton")
+LogoButton.Name = "GameLogoButton"
+LogoButton.Size = UDim2.new(0, 54, 0, 54)
+LogoButton.Position = UDim2.new(1, -74, 1, -130)
+LogoButton.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+LogoButton.BorderSizePixel = 0
+LogoButton.Image = "rbxthumb://type=GameIcon&id="
+    .. tostring(game.GameId) .. "&w=150&h=150"
+LogoButton.ScaleType = Enum.ScaleType.Crop
+LogoButton.ZIndex = 10
+LogoButton.Visible = false
+LogoButton.Parent = ScreenGui
+
+local LogoCorner = Instance.new("UICorner")
+LogoCorner.CornerRadius = UDim.new(0, 12)
+LogoCorner.Parent = LogoButton
+
+local LogoStroke = Instance.new("UIStroke")
+LogoStroke.Color = Color3.fromRGB(255, 255, 255)
+LogoStroke.Thickness = 1.5
+LogoStroke.Parent = LogoButton
+
+-- ==================== LOGO DRAG ====================
+
+local isLogoDragging = false
+local logoDragStartPos = Vector2.new()
+local logoStartPos = UDim2.new()
+local logoHasMoved = false
+
+LogoButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        isLogoDragging = true
+        logoDragStartPos = input.Position
+        logoStartPos = LogoButton.Position
+        logoHasMoved = false
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if isLogoDragging and (
+        input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch
+    ) then
+        isLogoDragging = false
+
+        if not logoHasMoved then
+            toggleMenu()
+        end
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if isLogoDragging and (
+        input.UserInputType == Enum.UserInputType.MouseMovement
+        or input.UserInputType == Enum.UserInputType.Touch
+    ) then
+
+        local delta = input.Position - logoDragStartPos
+
+        if math.abs(delta.X) > 4 or math.abs(delta.Y) > 4 then
+            logoHasMoved = true
+        end
+
+        if logoHasMoved then
+            LogoButton.Position = UDim2.new(
+                logoStartPos.X.Scale,
+                logoStartPos.X.Offset + delta.X,
+                logoStartPos.Y.Scale,
+                logoStartPos.Y.Offset + delta.Y
+            )
+        end
+    end
+end)
+
+-- ==================== CLOSE BUTTON ====================
+
+CloseBtn.Activated:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+-- ==================== LOGIN ====================
+
+SubmitKeyBtn.Activated:Connect(function()
+    if actualKey == "OPAH11" then
+        keyAuthenticated = true
+        KeyFrame:Destroy()
+        MainFrame.Visible = true
+
+        if ScreenGui:FindFirstChild("GameLogoButton") then
+            ScreenGui.GameLogoButton.Visible = true
+        end
+    else
+        actualKey = ""
+        KeyBox.Text = ""
+        KeyBox.PlaceholderText = "KEY SALAH!"
+    end
+end)
+
+-- ==================== HEARTBEAT ====================
+
+RunService.Heartbeat:Connect(function()
+    if not player.Character then return end
+
+    if espOpahActive then
+        updateKeyESP()
+        scanCodeObjects()
+        updateOpahESP()
+    end
+
+    if espPlayerActive then
+        updatePlayerESP()
+    end
+end)
+
+-- ==================== BUTTON TELEPORT ====================
+
+TeleportKeyButton.Activated:Connect(function()
+    local keyObject = findKeyObject()
+
+    if keyObject and teleportToObject(keyObject) then
+        TeleportKeyButton.Text = "KEY FOUND!"
+    else
+        TeleportKeyButton.Text = "KEY NOT FOUND!"
+    end
+
+    task.delay(2, function()
+        if TeleportKeyButton.Parent then
+            TeleportKeyButton.Text = "TELEPORT TO KEY"
+        end
+    end)
+end)
+
+TeleportCodeButton.Activated:Connect(function()
+    local codeObject = findCodeObject()
+
+    if codeObject and teleportToObject(codeObject) then
+        TeleportCodeButton.Text = "CODE FOUND!"
+    else
+        TeleportCodeButton.Text = "CODE NOT FOUND!"
+    end
+
+    task.delay(2, function()
+        if TeleportCodeButton.Parent then
+            TeleportCodeButton.Text = "TELEPORT TO CODE"
+        end
+    end)
+end)
+
+-- ==================== KEYBOARD SHORTCUT ====================
+
+local teleportCycle = 1
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if input.KeyCode == Enum.KeyCode.L then
+        if keyAuthenticated and (not KeyFrame or not KeyFrame.Parent) then
+            toggleMenu()
+        end
+    end
+
+    if gameProcessed then return end
+
+    if input.KeyCode == Enum.KeyCode.H then
+        if not keyAuthenticated then return end
+
+        if UserInputService:GetFocusedTextBox() then
+            return
+        end
+
+        if teleportCycle >= 1 and teleportCycle <= 5 then
+            local keyObject = findKeyObject()
+
+            if keyObject and teleportToObject(keyObject) then
+                TeleportKeyButton.Text = "KEY " .. tostring(teleportCycle) .. " FOUND!"
+            else
+                TeleportKeyButton.Text = "KEY NOT FOUND!"
+            end
+
+            teleportCycle = teleportCycle + 1
+
+            task.delay(2, function()
+                if TeleportKeyButton.Parent then
+                    TeleportKeyButton.Text = "TELEPORT TO KEY"
+                end
+            end)
+        else
+            local codeObject = findCodeObject()
+
+            if codeObject and teleportToObject(codeObject) then
+                TeleportCodeButton.Text = "CODE FOUND!"
+            else
+                TeleportCodeButton.Text = "CODE NOT FOUND!"
+            end
+
+            teleportCycle = 1
+
+            task.delay(2, function()
+                if TeleportCodeButton.Parent then
+                    TeleportCodeButton.Text = "TELEPORT TO CODE"
+                end
+            end)
+        end
+    end
+end)
+
+-- ==================== CLEANUP ====================
+
+ScreenGui.Destroying:Connect(function()
+    if workspaceAddedConnection then
+        workspaceAddedConnection:Disconnect()
+        workspaceAddedConnection = nil
+    end
+
+    if lightingAddedConnection then
+        lightingAddedConnection:Disconnect()
+        lightingAddedConnection = nil
+    end
+
+    if fpsBoostEnabled then
+        restoreGraphics()
+    end
+
+    clearAllESP()
+end)
